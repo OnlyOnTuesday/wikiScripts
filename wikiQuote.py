@@ -43,7 +43,7 @@ class GetQuote(BeautifulSoup):
             self.conn = sqlite3.connect("wikiQuote.db")
 
         curs = self.conn.cursor()
-        curs.execute("SELECT * FROM quotes")
+        curs.execute("SELECT * FROM quotes ORDER BY date DESC LIMIT 1")
         lastResult = curs.fetchone()
         print("Used Database")
         return lastResult[0]
@@ -51,6 +51,8 @@ class GetQuote(BeautifulSoup):
     def saveToDB(self):
         """Take the current quote and save it to the database.  checks regardless 
         of checkDB to see if the quote already exists in the DB"""
+
+        #pdb.set_trace()
 
         #check the connection to the database
         if self.conn is None or self.conn != sqlite3.connect("wikiQuote.db"):
@@ -66,7 +68,7 @@ class GetQuote(BeautifulSoup):
 
         #determine if the current quote needs to be added, or if it would be
         #redundant
-        curs.execute("SELECT * FROM quotes")
+        curs.execute("SELECT * FROM quotes ORDER BY date DESC LIMIT 1")
         lastResult = curs.fetchone()
         
         nextResult = (self.quote, datetime.datetime.utcnow())
@@ -74,10 +76,12 @@ class GetQuote(BeautifulSoup):
             addition = (self.quote, datetime.datetime.utcnow())
             curs.execute("INSERT INTO quotes VALUES (?, ?)", addition)
             self.conn.commit()
+            print("committed to database")
         #used for testing
         # else:
         #     print("results are same")
         curs.close()
+        print("Saved to DataBase")
 
 
     def checkDB(self):
@@ -94,21 +98,35 @@ class GetQuote(BeautifulSoup):
             self.conn = sqlite3.connect("wikiQuote.db")
         
         curs = self.conn.cursor()
-        curs.execute("SELECT * FROM quotes")
-        lastResult = curs.fetchone()
+        curs.execute("SELECT * FROM quotes ORDER BY date DESC LIMIT 1")
+        lastResult = curs.fetchone() #DOESN'T FETCH THE LATEST RESULT, ONLY THE TOP ONE (THE FIRST ONE?)
         curs.close() #lastResult should persist past the closing of the db
 
         #gathers the day from the database
         DBDay = int(lastResult[1][8:10])
 
+        print(lastResult, datetime.datetime.utcnow(), currentDay, DBDay)
+        
         #only need to know if the days are different, not if one's larger
         if currentDay != DBDay:
+            print("returned true")
             return True
         else:
+            print("returned false")
             return False
-        
+
+    def getDB(self):
+        #check the connection to the database
+        if self.conn is None or self.conn != sqlite3.connect("wikiQuote.db"):
+            self.conn = sqlite3.connect("wikiQuote.db")
+
+        curs = self.conn.cursor()
+        curs.execute("SELECT * FROM quotes ORDER BY date DESC LIMIT 1")
+        for i in curs.fetchall():
+            print(i)
+
         
 
 x = GetQuote("https://en.wikiquote.org/wiki/Main_Page")
-x.saveToDB()
+
 
