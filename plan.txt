@@ -1,0 +1,14 @@
+A small plan of sorts I guess.
+
+I think we should make an abstract class that can be a super to two smaller classes.
+One of those smaller classes would be the current one that gathers the quote, and the other
+one would be a class that gathers the image from wikiversity.
+
+The super class would have the methods to go online, sort read and
+write a database, and sort through html, though the last two would
+probably have to be implemented at the concrete level, as opposed to
+the abstract.
+
+The name of the database would also have to be passed in at the
+concrete level (wouldn't the url too?).  This is just the small plan
+right now.  I'll plan the actual classes tomorrow.
