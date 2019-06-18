@@ -129,4 +129,6 @@
 
 # x = GetQuote("https://en.wikiquote.org/wiki/Main_Page")
 
+import getWiki
 
+class GetQuote

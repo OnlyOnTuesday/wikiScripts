@@ -6,10 +6,17 @@ import pdb
 
 class GetWiki(BeautifulSoup):
 
-    def __init__(self, req, dbConn):
-        self.quote = None
+    def __init__(self, req, dbConn, content):
+        self.content = content
         self.conn = None
         self.db = dbConn
+        self.request = req
+
+    def getWebPage(self):
+        """Use the internet to find content.  Use this when checkDB returns True"""
+
+        request = requests.get(self.request)
+        super().__init__(request.content, "html.parser")
 
     def checkDB(self):
         """Check the database to see if I need to gather information or if I've 
@@ -52,10 +59,6 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        #probably not necessary anymore; this error is usually triggered by user code
-        if self.quote is None:
-            raise Exception("self.quote is None", self.quote)
-
         tableName = self.isalnum(self.db)
         statement = """CREATE TABLE IF NOT EXISTS {}
                     (row1 TEXT, date TEXT)""".format(tableName)
@@ -68,9 +71,9 @@ class GetWiki(BeautifulSoup):
         curs.execute(statement2)
         lastResult = curs.fetchone()
 
-        nextResult = (self.quote, datetime.datetime.utcnow())
+        nextResult = (self.content, datetime.datetime.utcnow())
         if lastResult[0] != nextResult[0]:
-            addition = (self.quote, datetime.datetime.utcnow())
+            addition = (self.content, datetime.datetime.utcnow())
             statement3 = "INSERT INTO {} VALUES (?, ?)".format(tableName)
             curs.execute(statement3, addition)
             self.conn.commit()
