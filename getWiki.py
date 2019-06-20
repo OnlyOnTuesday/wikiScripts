@@ -6,17 +6,19 @@ import pdb
 
 class GetWiki(BeautifulSoup):
 
-    def __init__(self, req, dbConn, content):
-        self.content = content
+
+    def __init__(self, req, dbConn):
         self.conn = None
         self.db = dbConn
         self.request = req
+
 
     def getWebPage(self):
         """Use the internet to find content.  Use this when checkDB returns True"""
 
         request = requests.get(self.request)
         super().__init__(request.content, "html.parser")
+
 
     def checkDB(self):
         """Check the database to see if I need to gather information or if I've 
@@ -28,7 +30,7 @@ class GetWiki(BeautifulSoup):
             self.conn = sqlite3.connect(self.db)
 
         #filter out sql injection, create the sql statement
-        tableName = self.isalnum(self.db)
+        tableName = self.isalnum(self.db[:-3])
         statement = "SELECT * FROM {}".format(tableName)
 
         curs = self.conn.cursor()
@@ -49,7 +51,7 @@ class GetWiki(BeautifulSoup):
         else:
             print("returned False")
             return False
-        
+
 
     def saveToDB(self):
         """Take the current quote and save it to the database. Checks regardless
@@ -59,7 +61,7 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        tableName = self.isalnum(self.db)
+        tableName = self.isalnum(self.db[:-3])
         statement = """CREATE TABLE IF NOT EXISTS {}
                     (row1 TEXT, date TEXT)""".format(tableName)
         curs = self.conn.cursor()
@@ -81,9 +83,22 @@ class GetWiki(BeautifulSoup):
 
         curs.close()
         print("Saved to database")
+
+
+    def getDB(self):
+        """return the entire database's contents"""
+        if self.conn is None or self.conn != sqlite3.connect(self.db):
+            self.conn = sqlite3.connect(self.db)
+
+        statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.isalnum(self.db[:-3]))
+
+        curs = self.connect.cursor()
+        curs.execute(statement)
+        for i in curs.fetchall():
+            print(i)
+
         
-        
-    def isalnum(table):
+    def isalnum(self, table):
         """Function to filter out sql injection.  Only allows alphanumeric characters
         to be returned."""
         badChars = [ "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "-",\
@@ -91,3 +106,10 @@ class GetWiki(BeautifulSoup):
                      ":", ";", "|", "\\", "\"", "'"]
         x = list(filter(lambda x : x not in badChars, list(table)))
         return ''.join(x)
+
+
+    def getContent(self):
+        """Allows the parent class to find out what content it's dealing with 
+        in the child class"""
+
+        print(self.content)

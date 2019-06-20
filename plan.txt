@@ -12,3 +12,25 @@ the abstract.
 The name of the database would also have to be passed in at the
 concrete level (wouldn't the url too?).  This is just the small plan
 right now.  I'll plan the actual classes tomorrow.
+
+
+What can GetWiki do right now?:
+     get a web page
+     check the database
+     save to the database
+
+
+What can wikiQuote do right now?:
+     Find a quote nested in html
+     Find a quote stored in the database
+
+What do they still need to do?:
+     get the database(?)
+
+
+DEBUGGING:
+	I need to know what the content is in order to pass it to the
+	super class, but I need to the super class to init first.  How
+	can I solve this.  I think I can write a method to grab the
+	information later from the child in the parent.  How do I do
+	this?
