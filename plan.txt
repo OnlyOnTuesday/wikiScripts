@@ -29,8 +29,11 @@ What do they still need to do?:
 
 
 DEBUGGING:
-	I need to know what the content is in order to pass it to the
-	super class, but I need to the super class to init first.  How
-	can I solve this.  I think I can write a method to grab the
-	information later from the child in the parent.  How do I do
-	this?
+	Checking the database right now is kinda a nightmare. The
+	cursor is only returning one thing (what happened to the rest
+	of it?  I haven't deleted anything.) and it replaced test
+	content with None, instead of saving new, legitimate data.
+
+	I need to figure out why nothing is being saved or returned
+	and fix it.
+

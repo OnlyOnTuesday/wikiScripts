@@ -30,8 +30,8 @@ class GetWiki(BeautifulSoup):
             self.conn = sqlite3.connect(self.db)
 
         #filter out sql injection, create the sql statement
-        tableName = self.isalnum(self.db[:-3])
-        statement = "SELECT * FROM {}".format(tableName)
+        #tableName = self.isalnum(self.db[:-3])
+        statement = "SELECT * FROM {}".format(self.tableName)
 
         curs = self.conn.cursor()
         curs.execute(statement)
@@ -39,7 +39,7 @@ class GetWiki(BeautifulSoup):
         curs.close()
 
         #gathers day from database and gets currentDay
-        DBDay = int(lastResult[1][0:10])
+        DBDay = int(lastResult[1][8:10])
         currentDay = datetime.datetime.utcnow().day
 
         print(lastResult, datetime.datetime.utcnow(), currentDay, DBDay)
@@ -61,22 +61,22 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        tableName = self.isalnum(self.db[:-3])
+        #tableName = self.isalnum(self.db[:-3])
         statement = """CREATE TABLE IF NOT EXISTS {}
-                    (row1 TEXT, date TEXT)""".format(tableName)
+                    (row1 TEXT, date TEXT)""".format(self.tableName)
         curs = self.conn.cursor()
         curs.execute(statement)
 
         #determine if the current quote needs to be added, or if it would be
         #redundant
-        statement2 = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(tableName)
+        statement2 = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tableName)
         curs.execute(statement2)
         lastResult = curs.fetchone()
 
         nextResult = (self.content, datetime.datetime.utcnow())
         if lastResult[0] != nextResult[0]:
             addition = (self.content, datetime.datetime.utcnow())
-            statement3 = "INSERT INTO {} VALUES (?, ?)".format(tableName)
+            statement3 = "INSERT INTO {} VALUES (?, ?)".format(self.tableName)
             curs.execute(statement3, addition)
             self.conn.commit()
             print("committed to database")
@@ -90,9 +90,9 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.isalnum(self.db[:-3]))
+        statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.isalnum(self.tableName))
 
-        curs = self.connect.cursor()
+        curs = self.conn.cursor()
         curs.execute(statement)
         for i in curs.fetchall():
             print(i)
@@ -108,8 +108,10 @@ class GetWiki(BeautifulSoup):
         return ''.join(x)
 
 
-    def getContent(self):
+    def getDetails(self):
         """Allows the parent class to find out what content it's dealing with 
         in the child class"""
 
         print(self.content)
+        print(self.tableName)
+        

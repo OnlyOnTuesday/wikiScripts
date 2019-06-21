@@ -144,8 +144,8 @@ class GetQuote(GetWiki):
 
 
     def sendContent(self):
-        self.content = "This is my content"
-
+        self.content = None #when should this be sent to the parent?
+        self.tableName = "quotes"
 
     def findQuote(self):
         """Fish out the quote from inside the html and return it"""
@@ -180,9 +180,10 @@ class GetQuote(GetWiki):
 
 x = GetQuote("https://en.wikiquote.org/wiki/Main_Page")
 x.sendContent()
-x.getContent()
+x.getDetails()
 if x.checkDB():
     x.getWebPage()
     print(x.findQuote())
+    x.saveToDB()
 else:
     print(x.findQuoteFromDatabase())
