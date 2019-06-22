@@ -181,6 +181,7 @@ class GetQuote(GetWiki):
 x = GetQuote("https://en.wikiquote.org/wiki/Main_Page")
 x.sendContent()
 x.getDetails()
+x.getDB()
 if x.checkDB():
     x.getWebPage()
     print(x.findQuote())
