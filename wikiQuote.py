@@ -6,9 +6,6 @@ class GetQuote(GetWiki):
 
         self.request = req
 
-        #TODO: determine if I need to use the internet or not.
-        #maybe set the third param in the parent to a default.
-
         super().__init__(self.request, "wikiQuote.db", "quotes")
 
 
@@ -21,9 +18,8 @@ class GetQuote(GetWiki):
     def findQuote(self):
         """Fish out the quote from inside the html and return it"""
         
-        #how do I access the request from the super class in here?
         l = []
-        #find all inherited from BeautifulSoup in GetWiki
+        #find_all inherited from BeautifulSoup in GetWiki
         localQuote = self.find_all("table", style="text-align:center; width:100%")
         for i in localQuote:
             l.append(i.get_text())
@@ -35,8 +31,6 @@ class GetQuote(GetWiki):
     def findQuoteFromDatabase(self):
         """Find the quote if it hasn't been at least a day since the last 
         quote was gotten from wikiquote"""
-
-        #should this method be in the parent class?
 
         if self.conn is None or self.conn != sqlite3.connect("wikiQuote.db"):
             self.conn = sqlite3.connect("wikiQuote.db")
@@ -51,7 +45,6 @@ class GetQuote(GetWiki):
 
 x = GetQuote("https://en.wikiquote.org/wiki/Main_Page")
 x.getDetails()
-#ssx.getDB()
 if x.checkDB():
     x.getWebPage()
     print(x.findQuote())
