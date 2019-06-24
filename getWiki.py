@@ -7,11 +7,11 @@ import pdb
 class GetWiki(BeautifulSoup):
 
 
-    def __init__(self, req, dbConn):
+    def __init__(self, req, dbConn, tableName):
         self.conn = None
         self.db = dbConn
         self.request = req
-
+        self.tableName = tableName
 
     def getWebPage(self):
         """Use the internet to find content.  Use this when checkDB returns True"""
@@ -31,7 +31,7 @@ class GetWiki(BeautifulSoup):
 
         #filter out sql injection, create the sql statement
         #tableName = self.isalnum(self.db[:-3])
-        statement = "SELECT * FROM {}".format(self.tableName)
+        statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tableName)
 
         curs = self.conn.cursor()
         curs.execute(statement)
@@ -42,7 +42,7 @@ class GetWiki(BeautifulSoup):
         DBDay = int(lastResult[1][8:10])
         currentDay = datetime.datetime.utcnow().day
 
-        print(lastResult, datetime.datetime.utcnow(), currentDay, DBDay)
+        # print(lastResult, datetime.datetime.utcnow(), currentDay, DBDay)
 
         #only need to know if the days are different, not if one's larger
         if currentDay != DBDay:
@@ -74,7 +74,6 @@ class GetWiki(BeautifulSoup):
         lastResult = curs.fetchone()
 
         nextResult = (self.content, datetime.datetime.utcnow())
-        print(nextResult, lastResult)
         if lastResult[0] != nextResult[0]:
             addition = (self.content, datetime.datetime.utcnow())
             # statement3 = "INSERT INTO {} VALUES (?, ?), addition".format(self.tableName)
@@ -82,9 +81,10 @@ class GetWiki(BeautifulSoup):
             curs.execute("INSERT INTO {} VALUES (?, ?)".format(self.tableName), addition)
             self.conn.commit()
             print("committed to database")
+            print("Saved to database")
 
         curs.close()
-        print("Saved to database")
+
 
 
     def getDB(self):
@@ -113,6 +113,6 @@ class GetWiki(BeautifulSoup):
         """Allows the parent class to find out what content it's dealing with 
         in the child class"""
 
-        print(self.content)
         print(self.tableName)
+
         
