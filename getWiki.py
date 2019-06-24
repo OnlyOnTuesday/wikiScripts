@@ -74,10 +74,12 @@ class GetWiki(BeautifulSoup):
         lastResult = curs.fetchone()
 
         nextResult = (self.content, datetime.datetime.utcnow())
+        print(nextResult, lastResult)
         if lastResult[0] != nextResult[0]:
             addition = (self.content, datetime.datetime.utcnow())
-            statement3 = "INSERT INTO {} VALUES (?, ?)".format(self.tableName)
-            curs.execute(statement3, addition)
+            # statement3 = "INSERT INTO {} VALUES (?, ?), addition".format(self.tableName)
+            # curs.execute(statement3, addition)
+            curs.execute("INSERT INTO {} VALUES (?, ?)".format(self.tableName), addition)
             self.conn.commit()
             print("committed to database")
 
@@ -90,12 +92,11 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.isalnum(self.tableName))
+        statement = "SELECT * FROM {} ORDER BY date".format(self.isalnum(self.tableName))
 
         curs = self.conn.cursor()
         curs.execute(statement)
-        for i in curs.fetchall():
-            print(i)
+        print(curs.fetchall())
 
         
     def isalnum(self, table):
