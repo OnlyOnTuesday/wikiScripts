@@ -1,40 +1,26 @@
-A small plan of sorts I guess.
 
-I think we should make an abstract class that can be a super to two smaller classes.
-One of those smaller classes would be the current one that gathers the quote, and the other
-one would be a class that gathers the image from wikiversity.
+class wikiImage():
 
-The super class would have the methods to go online, sort read and
-write a database, and sort through html, though the last two would
-probably have to be implemented at the concrete level, as opposed to
-the abstract.
+      what should it do?
+	   grab the image from wikiversity and /display save it.
 
-The name of the database would also have to be passed in at the
-concrete level (wouldn't the url too?).  This is just the small plan
-right now.  I'll plan the actual classes tomorrow.
-
-
-What can GetWiki do right now?:
-     get a web page
-     check the database
-     save to the database
-
-
-What can wikiQuote do right now?:
-     Find a quote nested in html
-     Find a quote stored in the database
-
-What do they still need to do?:
-     get the database(?)
+      How should it save the image?:
+      	  *save the image file to a directory in the filesystem.
+	  *save the path to the file in a database, along with the
+      	  date. (the path should begin in the current directory, and
+      	  can't be changed once I begin using the db.)
+	  	what should the file structure be then?
+	
+      How should it display the image?
+      	  *pillow can open images, but that will open it in the image
+      	  viewer, which I don't like all that much.  Maybe there's a
+      	  way to change this.
+	  *os.system can call a command to have a specific application
+      	  open the image (like a shell command)
 
 
-DEBUGGING:
-	Checking the database right now is kinda a nightmare. The
-	cursor is only returning one thing (what happened to the rest
-	of it?  I haven't deleted anything.) and it replaced test
-	content with None, instead of saving new, legitimate data.
-
-	I need to figure out why nothing is being saved or returned
-	and fix it.
-
-	It's not saving to the database
+	  *I might also need to work with my xmonad configuration to
+           get it to float the window, so that the window doesn't
+           become bigger than the image.  I'm not sure, I'll come back
+           to this 
+	  
