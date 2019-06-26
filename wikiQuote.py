@@ -1,3 +1,4 @@
+import sqlite3
 from getWiki import GetWiki
 
 class GetQuote(GetWiki):
