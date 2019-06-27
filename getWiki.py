@@ -11,7 +11,7 @@ class GetWiki(BeautifulSoup):
         self.conn = None
         self.db = dbConn
         self.request = req
-        self.tableName = tableName
+        self.tableName = self.isalnum(tableName)
 
     def getWebPage(self):
         """Use the internet to find content.  Use this when checkDB returns True"""
@@ -25,12 +25,10 @@ class GetWiki(BeautifulSoup):
         already gotten it for the day.  Returns True if I need to gather it still,
         False otherwise"""
 
-        #check teh connection to the database and get the latest entry (namely, the day)
+        #check the connection to the database and get the latest entry (namely, the day)
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        #filter out sql injection, create the sql statement
-        #tableName = self.isalnum(self.db[:-3])
         statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tableName)
 
         curs = self.conn.cursor()
@@ -61,7 +59,6 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        #tableName = self.isalnum(self.db[:-3])
         statement = """CREATE TABLE IF NOT EXISTS {}
                     (row1 TEXT, date TEXT)""".format(self.tableName)
         curs = self.conn.cursor()
@@ -76,8 +73,6 @@ class GetWiki(BeautifulSoup):
         nextResult = (self.content, datetime.datetime.utcnow())
         if lastResult[0] != nextResult[0]:
             addition = (self.content, datetime.datetime.utcnow())
-            # statement3 = "INSERT INTO {} VALUES (?, ?), addition".format(self.tableName)
-            # curs.execute(statement3, addition)
             curs.execute("INSERT INTO {} VALUES (?, ?)".format(self.tableName), addition)
             self.conn.commit()
             print("committed to database")
@@ -92,7 +87,7 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        statement = "SELECT * FROM {} ORDER BY date".format(self.isalnum(self.tableName))
+        statement = "SELECT * FROM {} ORDER BY date".format(self.tableName)
 
         curs = self.conn.cursor()
         curs.execute(statement)
