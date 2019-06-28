@@ -47,3 +47,10 @@ how should the image be saved to the file?:
 
 How do I get the downloaded image into a PIL object variable? I
 suppose I should search through the html for it first.
+
+BUGS:
+	python requests module isn't downloading the updated html. For
+	some  reason it consistently provides me with the htlm from
+	yesterday's wikiversity main page (the image provided is
+	yesterday's). No one seems to have a similar enough problem
+	for me to find the answer online so this may take some time.
