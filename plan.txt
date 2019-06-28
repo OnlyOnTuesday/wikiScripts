@@ -54,3 +54,10 @@ BUGS:
 	yesterday's wikiversity main page (the image provided is
 	yesterday's). No one seems to have a similar enough problem
 	for me to find the answer online so this may take some time.
+
+	the response cookies list {"Last-Modified":"Sun, 23 Jun 2019
+	18:01:03 GMT"}.  Today is Friday. I wonder if that has
+	anything to do with my problem.
+	I wonder if the server that I'm in contact with just doesn't
+	have an updated version.  That would be annoying and I don't
+	know why it wouldn't, but anyway.
