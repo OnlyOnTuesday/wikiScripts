@@ -61,3 +61,16 @@ BUGS:
 	I wonder if the server that I'm in contact with just doesn't
 	have an updated version.  That would be annoying and I don't
 	know why it wouldn't, but anyway.
+
+	It's not the server.  The site in-browser has the same server
+	and a different time/day for "Last-Modified".
+
+	Solution(?): I changed the url from
+	"https://en.wikiversity.org/wiki/Main_Page" to
+	"https://en.wikiversity.org/wiki/Wikiversity:Main_Page" and it
+	brought up the right content.  Curiously, when I add ".html"
+	to the original url in browser, it redirects me to a not found
+	page (normal enough), but then when I click on the back button
+	it takes me back to yesterday's content (the same content I've
+	been trying to get past since last night).  If I refresh the
+	page it puts me where I should be. This happens everytime.
