@@ -74,3 +74,23 @@ BUGS:
 	it takes me back to yesterday's content (the same content I've
 	been trying to get past since last night).  If I refresh the
 	page it puts me where I should be. This happens everytime.
+
+	Next Day: I really just don't understand wikiversity or how it
+	works.  Now, if I type the second url from above, it takes me
+	to old content (What was new yesterday), but if I type in the
+	first url, it takes me to new content.  This makes no sense.
+	What the hell wikimedia.
+
+	I suppose I'll just have to check both urls as a worst case
+	scenario right now, but that also brings up the question of
+	how I check an image for equality.  Can I just use an equality
+	operator to compare the bytes, or is it more complicated than
+	that?
+
+code:
+	to get the image:
+	   download with request and put into bs
+	   var0 = bs.find_all('a', {'class' : 'image'})
+	   var1 = var0[2].contents
+	   var3 = var2[0]['src'] #gets the url for the image, which I
+	   #can then download
