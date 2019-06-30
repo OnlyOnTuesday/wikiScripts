@@ -102,3 +102,16 @@ code:
 Once the images are loaded into pillow, imagechops can be used to
 compare them.  Use getbbox to compare them (you want it to return
 none).
+
+
+what's the structure of this class again?
+sendContent:
+	updates the parent class with important information
+saveImage:
+	get the last image from the database and compare it to the
+	current one.  If they are different, save the current one,
+	else discard it.
+findImage:
+	sort through the html and get the image from wikipedia
+findImageFromDatabase:
+	sort through the db and get the last image

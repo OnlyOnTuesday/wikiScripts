@@ -1,5 +1,6 @@
 import sqlite3
-import PIL
+import io
+from PIL import Image, ImageChops
 from datetime import datetime as dt
 from getWiki import GetWiki
 
@@ -21,14 +22,28 @@ class WikiImage(GetWiki):
 
     def saveImage(self):
         """Save the image to a file located in a subdirectory.  The path is saved
-        in the database by the parent class."""
-        
+        in the database by the parent class.  This should only be used after 
+        findImage has been called"""
+
+        #something doesn't seem right about this code
+
+        image = PIL.Image.frombytes(io.BytesIO(self.image))
+        #TODO: add a directory to the beginning of the path
+        image.save(path)
+
 
     def findImage(self):
         """Fish out the image from the html and return it as a buffer"""
 
-        if self.conn is None or self.conn != sqlite3.connect("wikiImage.db"):
-            self.conn = sqlite3.connect("wikiImage.db")
+        #go through the tree, ending with a url that can download the image
+        imageList = self.find_all("a", {"class" : "image"})
+        localImageTag = imageList[2]
+        localImageURL = "https:" + localImageTag.contents[0]["src"]
+
+        #the image downloaded as bytes
+        self.image = requests.get(localImageURL)
+        print("Used Internet")
+        return self.image
 
 
     def findImageFromDatabase(self):
@@ -38,4 +53,8 @@ class WikiImage(GetWiki):
         if self.conn is None or self.conn != sqlite3.connect("wikiImage.db"):
             self.conn = sqlite3.connect("wikiImage.db")
 
-    
+        curs = self.conn.cursor()
+        curs.execute("SELECT * FROM paths ORDER BY date DESC LIMIT 1")
+        lastResult = curs.fetchone()
+        print("Used Database")
+        return lastResult[0]
