@@ -87,6 +87,10 @@ BUGS:
 	operator to compare the bytes, or is it more complicated than
 	that?
 
+	Download the data from the url, and compare it to the image
+	file?  I haven't actually tried that yet. Let me test
+	something.
+
 code:
 	to get the image:
 	   download with request and put into bs
@@ -94,3 +98,7 @@ code:
 	   var1 = var0[2].contents
 	   var3 = var2[0]['src'] #gets the url for the image, which I
 	   #can then download
+
+Once the images are loaded into pillow, imagechops can be used to
+compare them.  Use getbbox to compare them (you want it to return
+none).
