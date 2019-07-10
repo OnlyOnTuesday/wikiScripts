@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import sqlite3
+from sqlite3 import OperationalError
 import datetime
 import pdb
 
@@ -29,12 +30,63 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-        statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tableName)
-
         curs = self.conn.cursor()
-        curs.execute(statement)
-        lastResult = curs.fetchone()
-        curs.close()
+
+        #this doesn't raise an exception if it returns none, which is why it won't work.
+        #you need to find a way to check for none and then work based on that.
+
+        try:
+            statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tableName)
+            curs.execute(statement)
+            lastResult = curs.fetchone()
+            if lastResult == None:
+                #make sure something is returned.  This is usually used the first
+                #time the database is created because nothing exists yet.
+
+                #TODO: is this code necessary?
+                statement2 = "CREATE TABLE IF NOT EXISTS {}"\
+                    "(row1 TEXT, date TEXT)".format(self.tablename)
+                curs.execute(statement2)
+
+                #we should have this say yesterday so the function returns true
+                day = datetime.datetime.utcfromtimestamp(3)
+                values = ("None", day)
+
+                curs.execute("INSERT INTO {} VALUES (?, ?)".format(self.tablename), values)
+                curs.execute("SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tablename))
+                lastResult = curs.fetchone()
+                print(lastResult)
+                self.conn.commit()
+
+                curs.close()
+                
+            else:
+                curs.close()
+
+        except sqlite3.OperationalError:
+
+            #usually used when the database has just been created and the file
+            #is devoid of tables.
+
+            print("Operational Error: table 'paths' probably does not exist.  Creating table 'paths'")
+
+            statement2 = "CREATE TABLE IF NOT EXISTS {}"\
+                "(row1 TEXT, date TEXT)".format(self.tablename)
+            curs.execute(statement2)
+            
+            #we should have this say yesterday so the function returns true
+            day = datetime.datetime.utcfromtimestamp(3)
+            values = ("None", day)
+            
+            curs.execute("INSERT INTO {} VALUES (?, ?)".format(self.tablename), values)
+            curs.execute("SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tablename))
+            lastResult = curs.fetchone()
+            print(lastResult)
+            self.conn.commit()
+            
+            curs.close()
+                
+            
 
         #gathers day from database and gets currentDay
         DBDay = int(lastResult[1][8:10])
@@ -44,11 +96,12 @@ class GetWiki(BeautifulSoup):
 
         #only need to know if the days are different, not if one's larger
         if currentDay != DBDay:
-            print("returned True")
+            print("CheckDB returned True")
             return True
         else:
-            print("returned False")
+            print("CheckDB returned False")
             return False
+
 
 
     def saveToDB(self):
