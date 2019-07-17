@@ -30,11 +30,6 @@ class GetWiki(BeautifulSoup):
         if self.conn is None or self.conn != sqlite3.connect(self.db):
             self.conn = sqlite3.connect(self.db)
 
-<<<<<<< HEAD
-        statement = "SELECT * FROM {} ORDER BY date DESC LIMIT 1".format(self.tableName)
-
-=======
->>>>>>> experimental
         curs = self.conn.cursor()
 
         #this doesn't raise an exception if it returns none, which is why it won't work.
