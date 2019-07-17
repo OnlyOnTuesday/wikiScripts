@@ -24,3 +24,97 @@ class wikiImage():
            become bigger than the image.  I'm not sure, I'll come back
            to this 
 	  
+<<<<<<< HEAD
+=======
+
+
+
+
+What variables will I need?:
+     parent vars:
+     	    request
+	    content
+     child vars:
+     	    path
+	    the image in a buffer
+	    the database connection
+
+how should the image be saved to the file?:
+    the file should be created first
+    the image should then be saved to the file using the PIL function
+	Does the file need to be created before, or can it be created
+	on the fly?
+	   the file doesn't need to be created first. As long as a
+    file path is given it should save
+
+How do I get the downloaded image into a PIL object variable? I
+suppose I should search through the html for it first.
+
+BUGS:
+	python requests module isn't downloading the updated html. For
+	some  reason it consistently provides me with the htlm from
+	yesterday's wikiversity main page (the image provided is
+	yesterday's). No one seems to have a similar enough problem
+	for me to find the answer online so this may take some time.
+
+	the response cookies list {"Last-Modified":"Sun, 23 Jun 2019
+	18:01:03 GMT"}.  Today is Friday. I wonder if that has
+	anything to do with my problem.
+	I wonder if the server that I'm in contact with just doesn't
+	have an updated version.  That would be annoying and I don't
+	know why it wouldn't, but anyway.
+
+	It's not the server.  The site in-browser has the same server
+	and a different time/day for "Last-Modified".
+
+	Solution(?): I changed the url from
+	"https://en.wikiversity.org/wiki/Main_Page" to
+	"https://en.wikiversity.org/wiki/Wikiversity:Main_Page" and it
+	brought up the right content.  Curiously, when I add ".html"
+	to the original url in browser, it redirects me to a not found
+	page (normal enough), but then when I click on the back button
+	it takes me back to yesterday's content (the same content I've
+	been trying to get past since last night).  If I refresh the
+	page it puts me where I should be. This happens everytime.
+
+	Next Day: I really just don't understand wikiversity or how it
+	works.  Now, if I type the second url from above, it takes me
+	to old content (What was new yesterday), but if I type in the
+	first url, it takes me to new content.  This makes no sense.
+	What the hell wikimedia.
+
+	I suppose I'll just have to check both urls as a worst case
+	scenario right now, but that also brings up the question of
+	how I check an image for equality.  Can I just use an equality
+	operator to compare the bytes, or is it more complicated than
+	that?
+
+	Download the data from the url, and compare it to the image
+	file?  I haven't actually tried that yet. Let me test
+	something.
+
+code:
+	to get the image:
+	   download with request and put into bs
+	   var0 = bs.find_all('a', {'class' : 'image'})
+	   var1 = var0[2].contents
+	   var3 = var2[0]['src'] #gets the url for the image, which I
+	   #can then download
+
+Once the images are loaded into pillow, imagechops can be used to
+compare them.  Use getbbox to compare them (you want it to return
+none).
+
+
+what's the structure of this class again?
+sendContent:
+	updates the parent class with important information
+saveImage:
+	get the last image from the database and compare it to the
+	current one.  If they are different, save the current one,
+	else discard it.
+findImage:
+	sort through the html and get the image from wikipedia
+findImageFromDatabase:
+	sort through the db and get the last image
+>>>>>>> experimental

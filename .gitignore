@@ -6,3 +6,8 @@
 *.db
 __pycache__/**
 ipython_log*
+TESTIMG*
+NEWDIR/**
+**.png
+*journal
+temp*
