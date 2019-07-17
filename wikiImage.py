@@ -79,7 +79,7 @@ if y.checkDB():
     y.sendContent()
     y.findImage()
     y.saveImage()
-    #y.saveToDB()
+    y.saveToDB()
 else:
     #print(y.checkDB())
     #will also print a bunch of binary data
